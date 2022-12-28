@@ -1,38 +1,30 @@
 {
-    "accountId": "e366bb82-76f8-11ed-0a83-04ec000003ea",
-    "source":
-    {
-        "type":
-        {
+    "accountId": "54a3aa65-86bf-11ed-0a81-062400000056",
+    "source": {
+        "type": {
             "id": "83aa62a3-f20c-4052-9bea-3674fa6076fd"
         },
-        "actor":
-        {
-            "id": "7470d3c1-01cc-11ed-0a83-033600000002",
+        "actor": {
+            "id": "fbc15f55-8690-11ed-0a81-062400000000",
             "username": "admin@author.com"
         }
     },
-    "sum":
-    {
-        "declared": "2000.00"
+    "sum": {
+        "declared": "1000.00"
     },
     "comment": "YOU WILL PAY FOR THIS, COWARD!",
-    "subscribeTo":
-    {
-        "product":
-        {
+    "subscribeTo": {
+        "product": {
             "id": "9ac7876f-e03e-11ec-0a82-0b880000000e"
         },
-        "tariff":
-        {
+        "tariff": {
             "id": "cbd910e9-ca7b-4a06-a0b4-c74502b75344"
         },
         "trial": false,
-        "period":
-        {
+        "period": {
             "value": 1,
             "measure": "MONTHS"
         },
-        "demoPeriod": false
+     "demoPeriod": false
+        }
     }
-}
