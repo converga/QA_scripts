@@ -27,7 +27,7 @@ def bomber():
                 counter1 += 1
                 with s.post(url, data=json.dumps(sub_data), headers=headers):
                     print('request 1 done', counter1)
-            #return response
+            # return response
 
     print('bomber midway')
 
@@ -38,10 +38,10 @@ def bomber():
                 counter2 += 1
                 with s.post(url, data=json.dumps(sub_data), headers=headers):
                     print('request 2 done', counter2)
-            #return response_2
+            # return response_2
 
     print('------------------------------------------------')
-    print('итого, создано заявок:', counter1+counter2)
+    print('итого, создано заявок:', counter1 + counter2)
 
 
 # Создание пула потоков
