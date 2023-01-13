@@ -1,0 +1,67 @@
+{
+    "name": "{{$randomProductName}}",
+    "type": "APP",
+    "trial": {
+        "dayCount": 14,
+        "tariffId": "67e2683f-8b31-47c4-81d5-f979fdba8719"
+    },
+    "free": {
+        "tariffId": "d88073fb-ade0-4c02-8b09-1df5dd3e1d72"
+    },
+    "tariffs": [
+        {
+            "id": "d88073fb-ade0-4c02-8b09-1df5dd3e1d72",
+            "name": {
+                "ru": "Бесплатный",
+                "en": "Free"
+            },
+            "description": {
+                "ru": "Некоторое описание",
+                "en": "Some information"
+            },
+            "hidden": false,
+            "price": 0.00
+        },
+        {
+            "id": "67e2683f-8b31-47c4-81d5-f979fdba8719",
+            "name": {
+                "ru": "Триальный",
+                "en": "Trial"
+            },
+            "description": {
+                "ru": "Некоторое описание 2",
+                "en": "Some trial description 2"
+            },
+            "hidden": false,
+            "price": 0.00
+        },
+        {
+            "id": "67e2683f-8b31-47c4-81d5-f979fdba8715",
+            "name": {
+                "ru": "Платный 444",
+                "en": "Paid"
+            },
+
+            "description": {
+                "ru": "Некоторое описание платного тарифа",
+                "en": "Some description of paid tariff"
+            },
+
+            "hidden": false,
+            "price": 444.00
+        },
+          {
+            "id": "d88073fb-ade0-4c02-8b09-1df5dd3e1d76",
+            "name": {
+                "ru": "за касарь",
+                "en": "SUPER LUXURY"
+            },
+            "description": {
+                "ru": "Некоторое описание123123",
+                "en": "Some information123123"
+            },
+            "hidden": false,
+            "price": 1000.00
+        }
+    ]
+}
