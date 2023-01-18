@@ -4,7 +4,7 @@ import uuid
 
 # Changing parameters:
 counter = 1
-namespace = 'billing-4'
+namespace = 'billing-6'
 product_number = 6
 
 # set up url for creating the product
