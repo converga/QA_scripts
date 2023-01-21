@@ -9,9 +9,9 @@ from concurrent.futures import ThreadPoolExecutor
 
 con = sqlalchemy.create_engine('postgresql://postgres:@127.0.0.1:8181/lognex')
 
-namespace = 4  # Неймспейс
-ticket_number = 1  # Количество заявок на 1 поток
-thread_number = 2  # Количество потоков
+namespace = 5  # Неймспейс
+ticket_number = 80  # Количество заявок на 1 поток
+thread_number = 10  # Количество потоков
 prolongation_flag = False  # Для кейсов с автопролонгацией. True - включена, False - не будут
 
 # Запрос
@@ -19,20 +19,24 @@ url = f'https://subzero-billing-{namespace}.testms-test.lognex.ru/api/clinton/1.
 headers = {'Content-Type': 'application/json'}
 
 
-# Фукнция для запроса к базе
+# Функция для запроса к базе
 def sql_go(request):
     return pd.read_sql(sqlalchemy.text(request), con)
 
+
+#  Формирование списка продуктов с его тарифами:
 
 sql_product = '''
             select name as "Название_продукта", internal_id as "ID_продукта", trialtariff_id as "ID_триального_тарифа"
 from billing.productversion
 where name ILIKE 'Test_product_%'
-        '''
+limit 5 '''  # Ограничение количества продуктов
+
+#  Формирование списка аккаунтов:
 
 product_list = sql_go(sql_product)
-
-account_list = sql_go('''select id from billing.billingaccount WHERE company LIKE 'test%' ''')
+account_list = sql_go('''select id from billing.billingaccount WHERE company LIKE 'test%'
+limit 1 ''')  # Ограничение количества аккаунтов
 
 
 def bomber_many_products():
