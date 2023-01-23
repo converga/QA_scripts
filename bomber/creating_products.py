@@ -3,9 +3,9 @@ import json
 import uuid
 
 # Changing parameters:
-counter = 7
-namespace = 'billing-5'
-product_number = 4
+counter = 1  # Product number alias
+namespace = 'billing-5'  # Namespace
+product_number = 10  # Number of products to create
 
 # set up url for creating the product
 url = f'https://admin-{namespace}.testms-test.lognex.ru/api/tarifflego/1.0/product'
