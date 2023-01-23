@@ -11,7 +11,7 @@ con = sqlalchemy.create_engine('postgresql://postgres:@127.0.0.1:8181/lognex')
 
 namespace = 5  # Неймспейс
 ticket_number = 80  # Количество заявок на 1 поток
-thread_number = 10  # Количество потоков
+thread_number = 5  # Количество потоков
 prolongation_flag = False  # Для кейсов с автопролонгацией. True - включена, False - не будут
 
 # Запрос
@@ -30,12 +30,12 @@ sql_product = '''
             select name as "Название_продукта", internal_id as "ID_продукта", trialtariff_id as "ID_триального_тарифа"
 from billing.productversion
 where name ILIKE 'Test_product_%'
-limit 5 '''  # Ограничение количества продуктов
+limit 10 '''  # Ограничение количества продуктов
 
 #  Формирование списка аккаунтов:
 
 product_list = sql_go(sql_product)
-account_list = sql_go('''select id from billing.billingaccount WHERE company LIKE 'test%'
+account_list = sql_go('''select id from billing.billingaccount WHERE company LIKE 'loadtest%'
 limit 1 ''')  # Ограничение количества аккаунтов
 
 

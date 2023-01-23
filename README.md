@@ -4,8 +4,8 @@
 
 
 ## Требования
-Для корректной работы требуется python, не ниже 3.7
-https://www.python.org/downloads/
+* Для корректной работы требуется python, не ниже 3.7. [скачать](https://www.python.org/downloads/)
+* Для корректной работы скрипта `bomber` нужен проброс портов до бд неймспейса, по [инструкции](https://lognex.atlassian.net/wiki/spaces/SPC1/pages/1488978387/PostgreSQL+OpenShift)
 
 ## Структура
 Скрипт bomber:
