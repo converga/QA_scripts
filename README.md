@@ -1,5 +1,28 @@
-# QA_scripts
-A few useful scrpipts for testing moysklad and subzero endpoints such as:
-* bomber_single - a script to bomb with requests one or two accounts, in threads  
-* bomber2many - a script to bomb with requests to many accounts, in threads  
-* reg_script - simple registry script to MoySklad via REMAP, with a bunch of tricky IPs
+# Automation scripts for SUBZERO
+# Назначение
+Скрипты для автоматизации для разных задач, связанных с тестированием Биллинга, Subzero
+
+
+## Требования
+* Для корректной работы требуется python, не ниже 3.7. [скачать](https://www.python.org/downloads/)
+* Для корректной работы скрипта `bomber` нужен проброс портов до бд неймспейса, по [инструкции](https://lognex.atlassian.net/wiki/spaces/SPC1/pages/1488978387/PostgreSQL+OpenShift)
+
+## Структура
+Скрипт bomber:
+* `creating_products.ipynb` - скрипт для создания необходимого количества продуктов и перевода их в статус ACTIVE через `tarifflego`. Позволяет делать на них заявки
+  * `product_sample.json` - файл с базовой структурой для продукта, нужен для скрипта
+* `bomber.py` - собственно скрипт нагрузки, создает заявки через clintonAPI. Есть параметры:
+  * `namespace` - неймспейс, на который создается заявка 
+  * `ticket_number` - количество заявок на 1 поток 
+  * `thread_number` - количество потоков 
+  * `prolongation_flag` - Для кейсов с автопролонгацией. Если True - включена, пролонгация будет срабатывать, False - не будет
+* `json1.json` - файл с базовой структурой запроса для создания заявки, необходим для скрипта `bomber.py`
+reg_script:
+* `ms_reg_script.ipynb` - регистрация нужного количество аккаунтов через REMAP
+* `ip_reg_script.py` - регистрация аккаунтов с определенными IP (используется для проверки geoplugin)
+
+## Использование
+* Создать нужное количество аккаунтов на неймспейсе с помощью скрипта `ms_reg_script.ipynb`
+* Создать необходимое количество активных продуктов, задав параметры и запустив скрипт `creating_products.ipynb`
+* На основе созданных данных, можно делать нагрузочный тест с помощью скрипта `bomber.py`
+
