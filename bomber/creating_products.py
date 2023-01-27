@@ -4,7 +4,7 @@ import uuid
 
 # Changing parameters:
 counter = 1  # Product number alias
-namespace = 'billing-5'  # Namespace
+namespace = 'billing-4'  # Namespace
 product_number = 10  # Number of products to create
 
 # set up url for creating the product

@@ -9,10 +9,9 @@ def emails_list_generator(name, n):
     return emails
 
 
-emails_list = emails_list_generator('sobaka_sutulaya', 100)
-len(emails_list)
+emails_list = emails_list_generator('test', 200)  # 1ый параметр - имя
 
-namespace = 'billing-5'  # Неймспейс
+namespace = 'billing-4'  # Неймспейс
 
 url = f'https://online-{namespace}.testms-test.lognex.ru/api/remap/1.2/register'
 headers = {'Content-Type': 'application/x-www-form-urlencoded'}

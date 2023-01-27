@@ -11,8 +11,8 @@ con = sqlalchemy.create_engine(
     'postgresql://postgres:@127.0.0.1:8181/lognex')  # Соединение к бд. Требуется проброс портов
 
 namespace = 4  # Неймспейс
-ticket_number = 2  # Количество заявок на 1 поток
-thread_number = 30  # Количество потоков
+ticket_number = 1  # Количество заявок на 1 продукт
+thread_number = 1  # Количество потоков
 prolongation_flag = True  # Для кейсов с автопролонгацией. True - включена, False - выключена
 
 # Запрос
@@ -36,7 +36,7 @@ limit 10 '''  # Ограничение количества продуктов !
 #  Формирование списка аккаунтов:
 
 product_list = sql_go(sql_product)
-account_list = sql_go('''select id from billing.billingaccount WHERE company LIKE 'sobaka_sutulaya%'
+account_list = sql_go('''select id from billing.billingaccount WHERE company LIKE 'test%'
 limit 100 ''')  # Ограничение количества аккаунтов !!!
 
 
