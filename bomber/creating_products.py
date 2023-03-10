@@ -4,7 +4,11 @@ import uuid
 
 # Changing parameters:
 counter = 1  # Product number alias
+<<<<<<< HEAD
 namespace = 'billing-4'  # Namespace
+=======
+namespace = 'billing-2'  # Namespace
+>>>>>>> 1.2
 product_number = 10  # Number of products to create
 
 # set up url for creating the product
@@ -20,7 +24,7 @@ json_activate = json.dumps(data_activate)
 free_id = None
 trial_id = None
 for product in range(product_number):
-    with open('product_sample.json', encoding='utf-8') as product_data:
+    with open('bomber\product_sample.json', encoding='utf-8') as product_data:
         sub_data = json.load(product_data)
         sub_data['name'] = str(f'Test_product_{counter}')
 

@@ -10,13 +10,13 @@ from concurrent.futures import ThreadPoolExecutor
 con = sqlalchemy.create_engine(
     'postgresql://postgres:@127.0.0.1:8181/lognex')  # Соединение к бд. Требуется проброс портов
 
-namespace = 4  # Неймспейс
-ticket_number = 1  # Количество заявок на 1 продукт
+namespace = 'billing-2'  # Неймспейс
+ticket_number = 1  # Количество заявок на 1 поток
 thread_number = 1  # Количество потоков
 prolongation_flag = True  # Для кейсов с автопролонгацией. True - включена, False - выключена
 
 # Запрос
-url = f'https://subzero-billing-{namespace}.testms-test.lognex.ru/api/clinton/1.0/ticket'
+url = f'https://subzero-{namespace}.testms-test.lognex.ru/api/clinton/1.0/ticket'
 headers = {'Content-Type': 'application/json'}
 
 
@@ -28,15 +28,24 @@ def sql_go(request):
 #  Формирование списка продуктов с его тарифами:
 
 sql_product = '''
-            select name as "Название_продукта", internal_id as "ID_продукта", trialtariff_id as "ID_триального_тарифа"
-from billing.productversion
-where name ILIKE 'Test_product_%'
+            WITH paid_tariffs AS (
+  SELECT *
+  FROM billing.tariffversion
+  WHERE price = 1000
+)
+SELECT pv.name AS "Название_продукта", 
+       pv.internal_id AS "ID_продукта", 
+       pv.trialtariff_id AS "ID_триального_тарифа",
+       paid_tariffs.internal_id AS "ID_платного_тарифа"
+FROM billing.productversion pv
+LEFT JOIN billing.tariff t ON pv.internal_id = t.product_id
+inner JOIN paid_tariffs ON paid_tariffs.internal_id = t.id
+WHERE pv.name ILIKE 'Test_product_%'
 limit 10 '''  # Ограничение количества продуктов !!!
-
 #  Формирование списка аккаунтов:
 
 product_list = sql_go(sql_product)
-account_list = sql_go('''select id from billing.billingaccount WHERE company LIKE 'test%'
+account_list = sql_go('''select id from billing.billingaccount WHERE company LIKE 'test_load%'
 limit 100 ''')  # Ограничение количества аккаунтов !!!
 
 
@@ -46,7 +55,7 @@ def bomber_many_products():
     counter = 0
 
     with requests.Session():
-        with open('json1.json', 'r') as json1:
+        with open('bomber\json1.json', 'r') as json1:
             sub_data = json.load(json1)
             sub_data['subscribeTo']['autoprolongate'] = prolongation_flag
 
@@ -56,7 +65,7 @@ def bomber_many_products():
 
                     for index, row in product_list.iterrows():
                         sub_data['subscribeTo']['product']['id'] = str(product_list.loc[index, 'ID_продукта'])
-                        sub_data['subscribeTo']['tariff']['id'] = str(product_list.loc[index, 'ID_триального_тарифа'])
+                        sub_data['subscribeTo']['tariff']['id'] = str(product_list.loc[index, 'ID_триального_тарифа'])  # Вставить тариф из запроса, Платный или Бесплатный
 
                         counter += 1
 
