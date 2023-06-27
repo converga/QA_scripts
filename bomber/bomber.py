@@ -10,10 +10,10 @@ from concurrent.futures import ThreadPoolExecutor
 con = sqlalchemy.create_engine(
     'postgresql://postgres:@127.0.0.1:8181/lognex')  # Соединение к бд. Требуется проброс портов
 
-namespace = 'billing-2'  # Неймспейс
+namespace = 'billing-1'  # Неймспейс
 ticket_number = 1  # Количество заявок на 1 поток
-thread_number = 1  # Количество потоков
-prolongation_flag = True  # Для кейсов с автопролонгацией. True - включена, False - выключена
+thread_number = 10  # Количество потоков
+prolongation_flag = False  # Для кейсов с автопролонгацией. True - включена, False - выключена
 
 # Запрос
 url = f'https://subzero-{namespace}.testms-test.lognex.ru/api/clinton/1.0/ticket'
@@ -46,7 +46,7 @@ limit 10 '''  # Ограничение количества продуктов !
 
 product_list = sql_go(sql_product)
 account_list = sql_go('''select id from billing.billingaccount WHERE company LIKE 'test_load%'
-limit 100 ''')  # Ограничение количества аккаунтов !!!
+limit 10 ''')  # Ограничение количества аккаунтов !!!
 
 
 def bomber_many_products():
@@ -65,7 +65,7 @@ def bomber_many_products():
 
                     for index, row in product_list.iterrows():
                         sub_data['subscribeTo']['product']['id'] = str(product_list.loc[index, 'ID_продукта'])
-                        sub_data['subscribeTo']['tariff']['id'] = str(product_list.loc[index, 'ID_триального_тарифа'])  # Вставить тариф из запроса, Платный или Бесплатный
+                        sub_data['subscribeTo']['tariff']['id'] = str(product_list.loc[index, 'ID_платного_тарифа'])  # Вставить тариф из запроса, Платный или Бесплатный
 
                         counter += 1
 

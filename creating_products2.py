@@ -4,8 +4,7 @@ import uuid
 import argparse
 
 # Command line arguments
-parser = argparse.ArgumentParser(description='Product registration script.')
-parser.add_argument('--counter', type=int, help='Product number alias')
+parser = argparse.ArgumentParser(description='Product registration script')
 parser.add_argument('--namespace', type=str, help='Namespace')
 parser.add_argument('--product_number', type=int, help='Number of products to create')
 parser.add_argument('--product_name', type=str, help='Name of the product')
@@ -21,12 +20,13 @@ data_activate = {
 }
 json_activate = json.dumps(data_activate)
 
+counter = 1
 free_id = None
 trial_id = None
 for product in range(args.product_number):
     with open('bomber\product_sample.json', encoding='utf-8') as product_data:
         sub_data = json.load(product_data)
-        sub_data['name'] = args.product_name + f'{args.counter}'
+        sub_data['name'] = args.product_name + f'{counter}'
 
     for tariff in sub_data["tariffs"]:
         if tariff["name"]["en"] == "Free":
@@ -57,9 +57,9 @@ for product in range(args.product_number):
 
         response_activate = requests.put(url2, json_activate, headers=headers)
         if response_activate.status_code == 204:
-            print(f'Product{args.counter} successfully activated!')
+            print(f'Product{counter} successfully activated!')
             print('------------------------------------------')
-            args.counter += 1
+            counter += 1
         else:
             print(f'Request failed with status code {response_activate.status_code}')
 
@@ -67,4 +67,4 @@ for product in range(args.product_number):
         print(f'Failed, {response}')
 
 # to run the script: 
-# python creating_products2.py --counter 1 --namespace billing-1 --product_number 3 --product_name "test_product"  
+# python creating_products2.py --namespace billing-1 --product_number 3 --product_name "test_product"  
