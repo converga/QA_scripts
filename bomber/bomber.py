@@ -3,20 +3,32 @@ import json
 import sqlalchemy
 import time
 import pandas as pd
+import argparse
 from concurrent.futures import ThreadPoolExecutor
 
-# Изменяемые параметры:
+# параметры запуска:
+def arg_parse():
+    parser = argparse.ArgumentParser(description='subzero ticket trigger')
+    parser.add_argument('-namespace', type=str, help='Target k8s namespace. Example: billing-1')
+    parser.add_argument('-ticket_count', default=1, type=int, help='Count of subzero tickets to create')
+    parser.add_argument('-t', '--threads', default=5, type=int,
+                        help='The number of threads to create load')
+    parser.add_argument('-prolong', default = True, type = bool)
+    return parser.parse_args()
+
 
 con = sqlalchemy.create_engine(
     'postgresql://postgres:@127.0.0.1:8181/lognex')  # Соединение к бд. Требуется проброс портов
 
-namespace = 'billing-1'  # Неймспейс
-ticket_number = 1  # Количество заявок на 1 поток
-thread_number = 10  # Количество потоков
-prolongation_flag = False  # Для кейсов с автопролонгацией. True - включена, False - выключена
+args = arg_parse()
+
+# namespace = 'billing-1'  # Неймспейс
+#ticket_number = 1  # Количество заявок на 1 поток
+#thread_number = 10  # Количество потоков
+#prolongation_flag = False  # Для кейсов с автопролонгацией. True - включена, False - выключена
 
 # Запрос
-url = f'https://subzero-{namespace}.testms-test.lognex.ru/api/clinton/1.0/ticket'
+url = f'https://subzero-{args.namespace}.testms-test.lognex.ru/api/clinton/1.0/ticket'
 headers = {'Content-Type': 'application/json'}
 
 
@@ -45,11 +57,13 @@ limit 10 '''  # Ограничение количества продуктов !
 #  Формирование списка аккаунтов:
 
 product_list = sql_go(sql_product)
-account_list = sql_go('''select id from billing.billingaccount WHERE company LIKE 'test_load%'
+account_list = sql_go('''select id from billing.billingaccount WHERE company LIKE 'test%'
 limit 10 ''')  # Ограничение количества аккаунтов !!!
 
 
 def bomber_many_products():
+    
+
     print('bomber start')
 
     counter = 0
@@ -57,9 +71,9 @@ def bomber_many_products():
     with requests.Session():
         with open('bomber\json1.json', 'r') as json1:
             sub_data = json.load(json1)
-            sub_data['subscribeTo']['autoprolongate'] = prolongation_flag
+            sub_data['subscribeTo']['autoprolongate'] = args.prolong
 
-            for i in range(ticket_number):
+            for i in range(argparse.ticket_count):
                 for index, row in account_list.iterrows():
                     sub_data['accountId'] = str(row['id'])
 
@@ -86,9 +100,9 @@ def bomber_many_products():
 # Пуск потоков:
 
 start = time.time()  # точка отсчета времени
-with ThreadPoolExecutor(max_workers=thread_number) as executor:
+with ThreadPoolExecutor(max_workers=args.threads) as executor:
     # Запуск потоков
-    results = [executor.submit(bomber_many_products) for _ in range(thread_number)]
+    results = [executor.submit(bomber_many_products) for _ in range(args.threads)]
 
 end = time.time() - start  # конец отчета времени
 print('Все потоки отработали')
