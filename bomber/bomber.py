@@ -15,6 +15,10 @@ parser.add_argument("-thread_number", default=1, help="number of threads", type=
 parser.add_argument("-product_number", default=10, help="maximum number of products to create tickets for", 
                     type=int, required=True)
 parser.add_argument("-company", default='test', help = "company name", type=str)
+parser.add_argument("-company_number", default=100, help = "company number limit", 
+                    type=int, required=False)
+parser.add_argument("-prolongation", default=True, help = "prolongation flag", 
+                    type=bool, required=False)
 
 
 args = parser.parse_args()
@@ -23,15 +27,10 @@ args = parser.parse_args()
 con = sqlalchemy.create_engine(
     'postgresql://postgres:@127.0.0.1:8181/lognex')  
 
-# namespace = 'billing-1'  # Неймспейс
-# ticket_number = 1  # Количество заявок на 1 поток
-# thread_number = 1  # Количество потоков
-# prolongation_flag = False  # 
-
 namespace = args.namespace  # Неймспейс
 ticket_number = args.ticket_number  # Количество заявок на 1 поток
 thread_number = args.thread_number  # Количество потоков
-prolongation_flag = True  # Для кейсов с автопролонгацией. True - вкл False - выкл
+prolongation_flag = args.prolongation  # Для кейсов с автопролонгацией
 product_number = args.product_number
 company = args.company
 
@@ -62,12 +61,12 @@ FROM billing.productversion pv
 LEFT JOIN billing.tariff t ON pv.internal_id = t.product_id
 inner JOIN paid_tariffs ON paid_tariffs.internal_id = t.id
 WHERE pv.name ILIKE 'Test_product_%'
-limit {product_number} '''  # Ограничение количества продуктов !!!
+limit {product_number} '''  # Ограничение количества продуктов
 
 #  Формирование списка аккаунтов:
 product_list = sql_go(sql_product)
-account_list = sql_go(f'''select id from billing.billingaccount WHERE company LIKE '{company}%'
-limit 10 ''')  # Ограничение количества аккаунтов !!!
+account_list = sql_go(f'''select id from billing.billingaccount WHERE company LIKE '{company}%' 
+                      limit {args.company_number} ''')  # Ограничение аккаунтов
 
 
 def bomber_many_products():
@@ -88,7 +87,7 @@ def bomber_many_products():
 
                     for index, row in product_list.iterrows():
                         sub_data['subscribeTo']['product']['id'] = str(product_list.loc[index, 'ID_продукта'])
-                        sub_data['subscribeTo']['tariff']['id'] = str(product_list.loc[index, 'ID_платного_тарифа'])  # Вставить тариф из запроса, Платный или Бесплатный
+                        sub_data['subscribeTo']['tariff']['id'] = str(product_list.loc[index, 'ID_платного_тарифа'])
 
                         counter += 1
 
@@ -116,3 +115,6 @@ with ThreadPoolExecutor(max_workers=thread_number) as executor:
 end = time.time() - start  # конец отчета времени
 print('Все потоки отработали')
 print(f'Выполнялось: {end}с')
+
+# Пример:
+# python bomber\bomber.py -namespace billing-1 -ticket_number 1  -thread_number 1 -product_number 1 -company test3

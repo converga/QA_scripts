@@ -1,4 +1,12 @@
 import requests
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-namespace", help="namespace target, for example: billing-1", required=True)
+parser.add_argument("-name", default="test", help="name prefix of accountsm for example: test", required=True)
+parser.add_argument("-number", default=10,  help="number of accounts", type = int, required=False)
+
+args = parser.parse_args()
 
 
 def emails_list_generator(name, n):
@@ -9,12 +17,12 @@ def emails_list_generator(name, n):
     return emails
 
 
-emails_list = emails_list_generator('test_load', 100)
-len(emails_list)
+emails_list = emails_list_generator(args.name, args.number)
+#len(emails_list)
 
-namespace = 'billing-2'  # Неймспейс
+#namespace = 'billing-2'  # Неймспейс
 
-url = f'https://online-{namespace}.testms-test.lognex.ru/api/remap/1.2/register'
+url = f'https://online-{args.namespace}.testms-test.lognex.ru/api/remap/1.2/register'
 headers = {'Content-Type': 'application/x-www-form-urlencoded'}
 
 counter = 0
