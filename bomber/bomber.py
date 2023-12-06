@@ -3,17 +3,45 @@ import json
 import sqlalchemy
 import time
 import pandas as pd
+import argparse
 from concurrent.futures import ThreadPoolExecutor
 
-# Изменяемые параметры:
+# параметры запуска:
 
+parser = argparse.ArgumentParser()
+parser.add_argument("-namespace", help="namespace target", required=True)
+parser.add_argument("-ticket_number", default=1, help="number of tickets per thread", type=int, required=True)
+parser.add_argument("-thread_number", default=1, help="number of threads", type=int, required=True)
+parser.add_argument("-product_number", default=10, help="maximum number of products to create tickets for", 
+                    type=int, required=True)
+parser.add_argument("-company", default='test', help = "company name", type=str)
+parser.add_argument("-company_number", default=100, help = "company number limit", 
+                    type=int, required=False)
+parser.add_argument("-prolongation", default=True, help = "prolongation flag", 
+                    type=bool, required=False)
+
+
+args = parser.parse_args()
+
+# Соединение к бд. Требуется проброс портов
 con = sqlalchemy.create_engine(
-    'postgresql://postgres:@127.0.0.1:8181/lognex')  # Соединение к бд. Требуется проброс портов
+    'postgresql://postgres:@127.0.0.1:8181/lognex')
 
-namespace = 'billing-2'  # Неймспейс
-ticket_number = 1  # Количество заявок на 1 поток
-thread_number = 1  # Количество потоков
-prolongation_flag = True  # Для кейсов с автопролонгацией. True - включена, False - выключена
+#  todo: 
+# 3b339e7f-eb56-40ee-9d36-79af20d578f8	USER	{"en": "User", "ru": "Пользовательская"}
+# 83aa62a3-f20c-4052-9bea-3674fa6076fd	ADMIN	{"en": "Admin", "ru": "Административная"}
+# 80557aeb-5e89-484a-8e4c-cf3b8f9dc858	PARTNER	{"en": "Partner", "ru": "Партнерская"}
+# 13f9e97b-8c11-409f-8ec2-2b4ec0830ce7	VENDOR	{"en": "Vendor", "ru": "Вендорская"}
+# 74ba2cfc-d4ee-4a63-a16f-2cf920c829c7	VENDOR_TEST	{"en": "Vendor test", "ru": "Вендорская тестирование"}
+# f3c7ccc8-df4e-11ed-b5ea-0242ac120002	SYSTEM	{"en": "System", "ru": "Системная"}  
+
+namespace = args.namespace  # Неймспейс
+ticket_number = args.ticket_number  # Количество заявок на 1 поток
+thread_number = args.thread_number  # Количество потоков
+prolongation_flag = args.prolongation  # Для кейсов с автопролонгацией
+product_number = args.product_number
+company = args.company
+
 
 # Запрос
 url = f'https://subzero-{namespace}.testms-test.lognex.ru/api/clinton/1.0/ticket'
@@ -27,7 +55,7 @@ def sql_go(request):
 
 #  Формирование списка продуктов с его тарифами:
 
-sql_product = '''
+sql_product = f'''
             WITH paid_tariffs AS (
   SELECT *
   FROM billing.tariffversion
@@ -41,15 +69,17 @@ FROM billing.productversion pv
 LEFT JOIN billing.tariff t ON pv.internal_id = t.product_id
 inner JOIN paid_tariffs ON paid_tariffs.internal_id = t.id
 WHERE pv.name ILIKE 'Test_product_%'
-limit 10 '''  # Ограничение количества продуктов !!!
-#  Формирование списка аккаунтов:
+limit {product_number} '''  # Ограничение количества продуктов
 
+#  Формирование списка аккаунтов:
 product_list = sql_go(sql_product)
-account_list = sql_go('''select id from billing.billingaccount WHERE company LIKE 'test_load%'
-limit 100 ''')  # Ограничение количества аккаунтов !!!
+account_list = sql_go(f'''select id from billing.billingaccount WHERE company LIKE '{company}%' 
+                      limit {args.company_number} ''')  # Ограничение аккаунтов
 
 
 def bomber_many_products():
+    
+
     print('bomber start')
 
     counter = 0
@@ -65,7 +95,7 @@ def bomber_many_products():
 
                     for index, row in product_list.iterrows():
                         sub_data['subscribeTo']['product']['id'] = str(product_list.loc[index, 'ID_продукта'])
-                        sub_data['subscribeTo']['tariff']['id'] = str(product_list.loc[index, 'ID_триального_тарифа'])  # Вставить тариф из запроса, Платный или Бесплатный
+                        sub_data['subscribeTo']['tariff']['id'] = str(product_list.loc[index, 'ID_платного_тарифа'])
 
                         counter += 1
 
@@ -93,3 +123,6 @@ with ThreadPoolExecutor(max_workers=thread_number) as executor:
 end = time.time() - start  # конец отчета времени
 print('Все потоки отработали')
 print(f'Выполнялось: {end}с')
+
+# Пример:
+# python bomber\bomber.py -namespace billing-1 -ticket_number 1  -thread_number 1 -product_number 1 -company test3

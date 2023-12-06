@@ -62,6 +62,32 @@
             },
             "hidden": false,
             "price": 1000.00
+        },
+        {
+            "id": "d88073fb-ade0-4c02-8b09-1df5dd3e1d77",
+            "name": {
+                "ru": "за 6k",
+                "en": "CORP"
+            },
+            "description": {
+                "ru": "Некоторое описание123123",
+                "en": "Some information123123"
+            },
+            "hidden": false,
+            "price": 6000.00
+        },
+        {
+            "id": "d88073fb-ade0-4c02-8b09-1df5dd3e1d78",
+            "name": {
+                "ru": "Минимальный",
+                "en": "Minimal"
+            },
+            "description": {
+                "ru": "Самый минимальный",
+                "en": "Minimal"
+            },
+            "hidden": false,
+            "price": 1.00
         }
     ]
 }
