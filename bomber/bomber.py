@@ -25,7 +25,15 @@ args = parser.parse_args()
 
 # Соединение к бд. Требуется проброс портов
 con = sqlalchemy.create_engine(
-    'postgresql://postgres:@127.0.0.1:8181/lognex')  
+    'postgresql://postgres:@127.0.0.1:8181/lognex')
+
+#  todo: 
+# 3b339e7f-eb56-40ee-9d36-79af20d578f8	USER	{"en": "User", "ru": "Пользовательская"}
+# 83aa62a3-f20c-4052-9bea-3674fa6076fd	ADMIN	{"en": "Admin", "ru": "Административная"}
+# 80557aeb-5e89-484a-8e4c-cf3b8f9dc858	PARTNER	{"en": "Partner", "ru": "Партнерская"}
+# 13f9e97b-8c11-409f-8ec2-2b4ec0830ce7	VENDOR	{"en": "Vendor", "ru": "Вендорская"}
+# 74ba2cfc-d4ee-4a63-a16f-2cf920c829c7	VENDOR_TEST	{"en": "Vendor test", "ru": "Вендорская тестирование"}
+# f3c7ccc8-df4e-11ed-b5ea-0242ac120002	SYSTEM	{"en": "System", "ru": "Системная"}  
 
 namespace = args.namespace  # Неймспейс
 ticket_number = args.ticket_number  # Количество заявок на 1 поток
