@@ -22,7 +22,7 @@ emails_list = emails_list_generator(args.name, args.number)
 
 #namespace = 'billing-2'  # Неймспейс
 
-url = f'https://online-{args.namespace}.testms-test.lognex.ru/api/remap/1.2/register'
+url = f'https://api-{args.namespace}.testms-test.lognex.ru/api/remap/1.2/register'
 headers = {'Content-Type': 'application/x-www-form-urlencoded'}
 
 counter = 0
@@ -36,6 +36,7 @@ for email in emails_list:
         # response=json.loads(response.text)
         print(f'account №{counter} successfully registered')
     else:
-        print('Registry failed!' + str(response))
+        error_msg = f"Ошибка {response.status_code} - {response.text}"
+        print('Registry failed!' + error_msg)
 print('------------------------------------------------')
 print(f'итого, зарегистрировано: {counter} из', len(emails_list))

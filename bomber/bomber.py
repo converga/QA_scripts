@@ -97,7 +97,7 @@ def bomber_many_products():
                         sub_data['subscribeTo']['product']['id'] = str(product_list.loc[index, 'ID_продукта'])
                         sub_data['subscribeTo']['tariff']['id'] = str(product_list.loc[index, 'ID_платного_тарифа'])
 
-                        counter += 1
+                        # counter += 1 # Перенести интератор ниже, тк засчитывает неотработанные заявки
 
                         response = requests.post(url, data=json.dumps(sub_data), headers=headers)
 
@@ -105,6 +105,7 @@ def bomber_many_products():
                             print()
                             print(f'Заявка для {row} создана', '\n')
                             print('------------------------------------------------')
+                            counter += 1
                         else:
                             print(f'Заявка для {row} НЕ создана' + str(response))
 

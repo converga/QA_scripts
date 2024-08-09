@@ -3,9 +3,9 @@ import json
 import uuid
 
 # Changing parameters:
-counter = 1  # Product number alias
-namespace = 'billing-4'  # Namespace
-product_number = 4  # Number of products to create
+counter = 1 
+namespace = 'billing-1'
+product_number = 20
 
 # set up url for creating the product
 url = f'https://admin-{namespace}.testms-test.lognex.ru/api/tarifflego/1.0/product'
@@ -18,7 +18,7 @@ data_activate = {
 json_activate = json.dumps(data_activate)
 
 for product in range(product_number):
-    with open('bomber\product_sample.json', encoding='utf-8') as product_data:
+    with open('bomber/product_sample.json', encoding='utf-8') as product_data:
         sub_data = json.load(product_data)
         sub_data['name'] = str(f'Test_product_{counter}')
 
@@ -42,7 +42,7 @@ for product in range(product_number):
         name_prefix = "_NoFree_NoTrial"
 
     # Add prefix to product name
-    sub_data['name'] =  sub_data['name'] + name_prefix
+    sub_data['name'] = sub_data['name'] + name_prefix
 
     # Assigning Free and Trial to a product, if exist
     if 'free' in sub_data:
@@ -65,7 +65,8 @@ for product in range(product_number):
         print('Success')
         response_data = response.json()
         product_id = response_data.get("id")
-        url2 = f'https://admin-{namespace}.testms-test.lognex.ru/api/tarifflego/1.0/product/{product_id}/version/1/status'
+        url2 = (f'https://admin-{namespace}.testms-test.lognex.ru/api/tarifflego/1.0/product/{product_id}/version/1'
+                f'/status')
 
         response_activate = requests.put(url2, json_activate, headers=headers)
         if response_activate.status_code == 204:

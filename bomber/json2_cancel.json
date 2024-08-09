@@ -1,0 +1,24 @@
+{
+    "accountId":"{{accountId}}",
+    "source":{
+       "type":{
+         "id":"83aa62a3-f20c-4052-9bea-3674fa6076fd"
+       },
+       "actor" : {
+         "id":"7470d3c1-01cc-11ed-0a83-033600000002",
+         "username":"admin@author.com"
+       }
+    },
+   "sum": { 
+       "declared" : "1000.00"
+     },
+    "comment": "Подписка будет удалена",
+    "unsubscribeFrom": {
+       "product": {
+         "id" : "{{productId}}"
+       },
+       "tariff": { 
+          "id" : "{{tariffId}}"
+        }
+    }
+ }

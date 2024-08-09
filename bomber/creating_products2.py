@@ -5,9 +5,9 @@ import argparse
 
 # Command line arguments
 parser = argparse.ArgumentParser(description='Product registration script')
-parser.add_argument('--namespace', type=str, help='Namespace')
-parser.add_argument('--product_number', type=int, help='Number of products to create')
-parser.add_argument('--product_name', type=str, help='Name of the product')
+parser.add_argument('namespace', type=str, help='Namespace')
+parser.add_argument('-product_number', type=int, help='Number of products to create')
+parser.add_argument('-product_name', type=str, help='Name of the product')
 args = parser.parse_args()
 
 # set up url for creating the product
